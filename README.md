@@ -51,3 +51,10 @@ Use a persistent Redis-backed rate limiter when deploying across multiple server
 - `npm run build`
 
 The access-policy tests cover successful entry, cross-gym denial, revoked/banned/suspended QR states, expired memberships, and suspended gyms.
+
+
+## IRONCLAD UI refresh
+
+The interface uses a clean, lime-accented fitness dashboard visual system inspired by the supplied reference: a compact workspace sidebar, responsive navigation, rounded data cards, modern tables, a branded IRONCLAD logo, and persistent dark/light theme selection. The default theme is dark; users can switch modes from the top bar.
+
+Responsive behavior is handled through Tailwind breakpoints and the global design tokens in `app/globals.css`. The redesign changes presentation components and styles while retaining the existing Next.js routes, server-side access checks, Prisma data access, and API handlers.

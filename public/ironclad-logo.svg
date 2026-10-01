@@ -1,7 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 120" role="img" aria-labelledby="title desc">
-<title id="title">Ironclad Multi-Gym System</title><desc id="desc">Lime green geometric strength emblem beside the Ironclad wordmark.</desc>
-<rect width="480" height="120" rx="18" fill="#0b100d"/>
-<g fill="#a3e635" transform="translate(20 17)"><path d="M0 31h8v24H0zM13 18h8v50h-8zM26 7h8v72h-8zM39 0h8v86h-8z"/><path d="M67 9h22l23 22v24L89 77H67V62h16l13-13V37L83 24H67z"/><path d="M59 28h13v38H59z" fill="#0b100d"/><path d="M111 31h8v24h-8zM124 18h8v50h-8z"/></g>
-<text x="176" y="59" fill="#f4f7f3" font-family="Arial,Helvetica,sans-serif" font-size="42" font-weight="900" letter-spacing="-1.7">IRONCLAD</text>
-<text x="179" y="83" fill="#a3e635" font-family="Arial,Helvetica,sans-serif" font-size="12" font-weight="700" letter-spacing="4.1">MULTI-GYM SYSTEM</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 96" role="img" aria-labelledby="title desc"><title id="title">IRONCLAD Multi-Gym System</title><desc id="desc">Lime geometric strength mark and IRONCLAD wordmark</desc><rect width="420" height="96" rx="14" fill="#0b100e"/><g fill="#84cc16"><path d="M18 34h7v28h-7zM29 22h8v52h-8zM41 12h8v72h-8zM53 24h8v48h-8zM65 34h7v28h-7z"/><path d="M43 22 62 10v76L43 74z" fill="#b8f36a"/></g><text x="92" y="51" font-family="Arial,Helvetica,sans-serif" font-size="37" font-weight="800" letter-spacing="-1.8" fill="#f4f7f4">IRONCLAD</text><text x="94" y="73" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="700" letter-spacing="4" fill="#9ba99e">MULTI-GYM SYSTEM</text></svg>
