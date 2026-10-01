@@ -15,7 +15,7 @@ export async function verifyPassword(password: string, hash: string) { return co
 export async function createSession(userId: string, meta: { ipAddress?: string | null; deviceInfo?: string | null }) {
   const token = randomBytes(32).toString("base64url");
   const expiresAt = new Date(Date.now() + ttlHours * 3_600_000);
-  await db.session.create({ data: { userId, tokenHash: hashToken(token), expiresAt, ...meta } });
+  await db.session.create({ data: { userId, tokenHash: hashToken(token), expiresAt, ipAddress: meta.ipAddress, userAgent: meta.deviceInfo } });
   (await cookies()).set(COOKIE, token, {
     httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/", expires: expiresAt
   });
