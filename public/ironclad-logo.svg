@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 120" role="img" aria-labelledby="title desc">
+<title id="title">Ironclad Multi-Gym System</title><desc id="desc">Lime green geometric strength emblem beside the Ironclad wordmark.</desc>
+<rect width="480" height="120" rx="18" fill="#0b100d"/>
+<g fill="#a3e635" transform="translate(20 17)"><path d="M0 31h8v24H0zM13 18h8v50h-8zM26 7h8v72h-8zM39 0h8v86h-8z"/><path d="M67 9h22l23 22v24L89 77H67V62h16l13-13V37L83 24H67z"/><path d="M59 28h13v38H59z" fill="#0b100d"/><path d="M111 31h8v24h-8zM124 18h8v50h-8z"/></g>
+<text x="176" y="59" fill="#f4f7f3" font-family="Arial,Helvetica,sans-serif" font-size="42" font-weight="900" letter-spacing="-1.7">IRONCLAD</text>
+<text x="179" y="83" fill="#a3e635" font-family="Arial,Helvetica,sans-serif" font-size="12" font-weight="700" letter-spacing="4.1">MULTI-GYM SYSTEM</text>
+</svg>
