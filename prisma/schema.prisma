@@ -307,7 +307,6 @@ model AccessLog {
   reason      String
   deviceInfo  String?
   scannedAt   DateTime       @default(now())
-  // Local calendar date key for a granted entry only; denied attempts keep this null.
   entryDay    String?
 
   @@unique([gymId, memberId, entryDay])
