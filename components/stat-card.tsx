@@ -1,0 +1,2 @@
+export function StatCard({label,value,detail,accent=false}:{label:string;value:string|number;detail?:string;accent?:boolean}){return <article className={`panel relative overflow-hidden p-5 ${accent?"!bg-[var(--acid)] !text-black":""}`}><span className="eyebrow opacity-60">{label}</span><div className="display mt-3 text-4xl">{value}</div>{detail&&<p className="mt-2 text-xs text-[var(--muted)]">{detail}</p>}<span className="absolute -bottom-6 -right-4 text-8xl font-black opacity-[.04]">#</span></article>}
+

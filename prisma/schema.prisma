@@ -1,0 +1,354 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  PLATFORM_OWNER
+  GYM_OWNER
+  ADMIN
+  MEMBER
+}
+enum UserStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  DISABLED
+}
+enum GymStatus {
+  PENDING
+  ACTIVE
+  REJECTED
+  SUSPENDED
+  INACTIVE
+}
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+enum MembershipStatus {
+  PENDING
+  ACTIVE
+  EXPIRED
+  SUSPENDED
+  CANCELLED
+}
+enum QrStatus {
+  ACTIVE
+  EXPIRED
+  BANNED
+  REVOKED
+  SUSPENDED
+}
+enum AccessResult {
+  GRANTED
+  DENIED
+}
+enum NotificationType {
+  MEMBERSHIP_EXPIRING
+  MEMBERSHIP_EXPIRED
+  QR_EXPIRING
+  QR_EXPIRED
+  QR_BANNED
+  QR_REVOKED
+  SYSTEM
+}
+
+model Gym {
+  id             String    @id @default(cuid())
+  code           String    @unique
+  name           String
+  slug           String    @unique
+  logoUrl        String?
+  description    String?
+  address        String
+  city           String
+  province       String?
+  country        String
+  phone          String
+  email          String
+  website        String?
+  gymType        String?
+  businessInfo   String?
+  status         GymStatus @default(PENDING)
+  ownerId        String?   @unique
+  memberSequence Int       @default(0)
+  owner          User?     @relation("GymOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  users          User[]    @relation("GymUsers")
+  memberProfiles MemberProfile[]
+  plans          MembershipPlan[]
+  memberships    Membership[]
+  qrCodes        QRCode[]
+  accessLogs     AccessLog[]
+  auditLogs      AuditLog[]
+  notifications  Notification[]
+  settings       GymSettings?
+  application    GymApplication?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([status])
+  @@index([name])
+}
+
+model GymApplication {
+  id                   String            @id @default(cuid())
+  gymName              String
+  slug                 String            @unique
+  logoUrl              String?
+  description          String?
+  address              String
+  city                 String
+  province             String?
+  country              String
+  contactNumber        String
+  email                String
+  website              String?
+  gymType              String
+  businessRegistration String
+  ownerFullName        String
+  ownerUsername        String            @unique
+  ownerEmail           String            @unique
+  ownerPhone           String
+  ownerPasswordHash    String
+  status               ApplicationStatus @default(PENDING)
+  rejectionReason      String?
+  reviewedById         String?
+  reviewedBy           User?             @relation("ApplicationReviewer", fields: [reviewedById], references: [id])
+  reviewedAt           DateTime?
+  gymId                String?           @unique
+  gym                  Gym?              @relation(fields: [gymId], references: [id])
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+
+  @@index([status, createdAt])
+}
+
+model User {
+  id                   String     @id @default(cuid())
+  gymId                String?
+  gym                  Gym?       @relation("GymUsers", fields: [gymId], references: [id], onDelete: Cascade)
+  ownedGym             Gym?       @relation("GymOwner")
+  username             String     @unique
+  email                String     @unique
+  passwordHash         String
+  fullName             String
+  phone                 String?
+  role                  UserRole
+  status                UserStatus @default(ACTIVE)
+  emailVerifiedAt       DateTime?
+  memberProfile         MemberProfile?
+  sessions              Session[]
+  passwordResetTokens   PasswordResetToken[]
+  reviewedApplications GymApplication[] @relation("ApplicationReviewer")
+  createdQrCodes        QRCode[]   @relation("QrCreator")
+  qrActions             QRCodeAction[] @relation("QrActionActor")
+  scans                 AccessLog[] @relation("Scanner")
+  auditActions          AuditLog[]  @relation("AuditActor")
+  notifications         Notification[]
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  @@index([gymId, role, status])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+  @@index([userId, expiresAt])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([userId, expiresAt])
+}
+
+model MemberProfile {
+  id                     String   @id @default(cuid())
+  gymId                  String
+  gym                    Gym      @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  userId                 String   @unique
+  user                   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  memberNumber           String
+  address                String?
+  dateOfBirth            DateTime?
+  gender                 String?
+  emergencyContact       String?
+  emergencyContactNumber String?
+  profilePhotoUrl        String?
+  memberships            Membership[]
+  qrCodes                QRCode[]
+  accessLogs             AccessLog[]
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  @@unique([gymId, memberNumber])
+  @@index([gymId, createdAt])
+}
+
+model MembershipPlan {
+  id          String   @id @default(cuid())
+  gymId       String
+  gym         Gym      @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  priceCents  Int
+  currency    String   @default("PHP")
+  durationDays Int
+  accessRules Json?
+  isActive    Boolean  @default(true)
+  memberships Membership[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([gymId, name])
+  @@index([gymId, isActive])
+}
+
+model Membership {
+  id        String           @id @default(cuid())
+  gymId     String
+  gym       Gym              @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  memberId  String
+  member    MemberProfile    @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  planId    String
+  plan      MembershipPlan   @relation(fields: [planId], references: [id])
+  status    MembershipStatus @default(ACTIVE)
+  startDate DateTime
+  endDate   DateTime
+  createdBy String
+  notes     String?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@index([gymId, memberId, status, endDate])
+}
+
+model QRCode {
+  id             String   @id @default(cuid())
+  gymId          String
+  gym            Gym      @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  memberId       String
+  member         MemberProfile @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  tokenHash      String   @unique
+  tokenCiphertext String
+  tokenPrefix    String
+  status         QrStatus @default(ACTIVE)
+  startDate      DateTime
+  expirationDate DateTime
+  createdById    String
+  createdBy      User     @relation("QrCreator", fields: [createdById], references: [id])
+  banReason      String?
+  revokedAt      DateTime?
+  revokedById    String?
+  actions        QRCodeAction[]
+  accessLogs     AccessLog[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([gymId, memberId, status, expirationDate])
+}
+
+model QRCodeAction {
+  id            String   @id @default(cuid())
+  qrCodeId      String
+  qrCode        QRCode   @relation(fields: [qrCodeId], references: [id], onDelete: Cascade)
+  gymId         String
+  action        String
+  oldExpiration DateTime?
+  newExpiration DateTime?
+  reason        String?
+  actorId       String
+  actor         User     @relation("QrActionActor", fields: [actorId], references: [id])
+  createdAt     DateTime @default(now())
+
+  @@index([gymId, qrCodeId, createdAt])
+}
+
+model AccessLog {
+  id          String       @id @default(cuid())
+  entryNumber String       @unique
+  gymId       String
+  gym         Gym          @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  memberId    String?
+  member      MemberProfile? @relation(fields: [memberId], references: [id], onDelete: SetNull)
+  qrCodeId    String?
+  qrCode      QRCode?      @relation(fields: [qrCodeId], references: [id], onDelete: SetNull)
+  scannedById String
+  scannedBy   User         @relation("Scanner", fields: [scannedById], references: [id])
+  scannerRole UserRole
+  result      AccessResult
+  reason      String
+  deviceInfo  String?
+  scannedAt   DateTime     @default(now())
+
+  @@index([gymId, scannedAt])
+  @@index([gymId, memberId, scannedAt])
+  @@index([gymId, result, scannedAt])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  gymId       String?
+  gym         Gym?     @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  actorId     String?
+  actor       User?    @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+  actorRole   UserRole?
+  action      String
+  targetType  String
+  targetId    String?
+  description String
+  metadata    Json?
+  ipAddress   String?
+  deviceInfo  String?
+  createdAt   DateTime @default(now())
+
+  @@index([gymId, createdAt])
+  @@index([action, createdAt])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  dedupeKey String           @unique
+  gymId     String
+  gym       Gym              @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  message   String
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  @@index([gymId, userId, readAt, createdAt])
+}
+
+model GymSettings {
+  id                    String  @id @default(cuid())
+  gymId                 String  @unique
+  gym                   Gym     @relation(fields: [gymId], references: [id], onDelete: Cascade)
+  primaryColor          String  @default("#dfff00")
+  accentColor           String  @default("#ff5c35")
+  timezone              String  @default("UTC")
+  allowMemberSelfUpdate Boolean @default(true)
+  notifyBeforeDays      Int     @default(7)
+  updatedAt             DateTime @updatedAt
+}
