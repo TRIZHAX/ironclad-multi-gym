@@ -61,3 +61,40 @@ main h2 { letter-spacing:-.04em; }
 .panel table tbody tr:hover { background:color-mix(in srgb,var(--acid) 5%,var(--panel)); }
 .panel table th { font-weight:650; }
 main section { scroll-margin-top:24px; }
+
+/* Contrast and theme safety: keep text readable when the theme changes. */
+html, body { min-height: 100%; }
+body { color: var(--ink); transition: color .18s ease, background-color .18s ease; }
+a { color: inherit; }
+button, input, textarea, select { font: inherit; }
+input, textarea, select { color: var(--ink); background-color: var(--panel-soft); }
+input::placeholder, textarea::placeholder { color: var(--muted); opacity: 1; }
+select option, optgroup { color: var(--ink); background: var(--panel); }
+:focus-visible { outline: 2px solid var(--acid-strong); outline-offset: 2px; }
+
+/* Common fixed Tailwind text colors that otherwise lose contrast in dark mode. */
+html.dark .text-red-700 { color: #fca5a5; }
+html.dark .text-red-800 { color: #fecaca; }
+html.dark .text-green-700 { color: #86efac; }
+html.dark .text-emerald-700 { color: #6ee7b7; }
+html.dark .text-amber-700 { color: #fcd34d; }
+html.dark .text-yellow-700 { color: #fde047; }
+html.dark .text-slate-500, html.dark .text-gray-500, html.dark .text-zinc-500,
+html.dark .text-neutral-500, html.dark .text-stone-500 { color: #a8b5aa; }
+html.dark .text-slate-600, html.dark .text-gray-600, html.dark .text-zinc-600,
+html.dark .text-neutral-600, html.dark .text-stone-600 { color: #c2cdc4; }
+html.dark .text-slate-700, html.dark .text-gray-700, html.dark .text-zinc-700,
+html.dark .text-neutral-700, html.dark .text-stone-700 { color: #d8e1d9; }
+html.dark .text-slate-800, html.dark .text-gray-800, html.dark .text-zinc-800,
+html.dark .text-neutral-800, html.dark .text-stone-800 { color: #edf4ee; }
+
+/* Keep muted copy legible, including small labels and table headings. */
+.eyebrow, .label { color: var(--muted); }
+html.dark .eyebrow, html.dark .label { color: #b5c2b7; }
+.app-table thead, .app-table thead th { color: var(--muted); }
+html.dark .app-table thead, html.dark .app-table thead th { color: #b5c2b7; }
+
+/* Error and validation messages remain readable in both themes. */
+[role="alert"] { color: #b91c1c; }
+html.dark [role="alert"] { color: #fecaca; }
+
