@@ -98,3 +98,30 @@ html.dark .app-table thead, html.dark .app-table thead th { color: #b5c2b7; }
 [role="alert"] { color: #b91c1c; }
 html.dark [role="alert"] { color: #fecaca; }
 
+
+
+/* Mobile quick navigation: persistent, thumb-friendly access to core areas. */
+.mobile-bottom-nav { display:none; }
+@media (max-width: 767px) {
+  .app-frame { display:flex; flex-direction:column; min-height:100dvh; padding-bottom:calc(72px + env(safe-area-inset-bottom)); }
+  .app-sidebar { position:relative; top:auto; height:auto; padding:12px 14px 10px; border-right:0; border-bottom:1px solid var(--line); }
+  .app-sidebar > div:first-child { min-height:38px; }
+  .app-workspace-card, .app-workspace-label, .app-primary-nav, .app-account-panel { display:none !important; }
+  .app-content { width:100%; padding:16px 12px 28px; }
+  .app-topline { gap:8px; margin-bottom:20px; align-items:center; }
+  .app-topline > div:first-child { flex:1; }
+  .app-topline > div:last-child { gap:6px; }
+  .app-topline button { min-width:36px; min-height:36px; }
+  .mobile-bottom-nav { position:fixed; z-index:60; right:0; bottom:0; left:0; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:2px; padding:8px 7px calc(8px + env(safe-area-inset-bottom)); border-top:1px solid var(--line); background:color-mix(in srgb,var(--panel) 94%,transparent); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); box-shadow:0 -8px 28px rgba(0,0,0,.08); }
+  .mobile-nav-item { display:flex; min-width:0; min-height:48px; flex-direction:column; align-items:center; justify-content:center; gap:4px; border-radius:11px; color:var(--muted); font-size:10px; font-weight:650; line-height:1.1; text-align:center; }
+  .mobile-nav-item span { display:block; max-width:100%; overflow:hidden; padding:0 1px; text-overflow:ellipsis; white-space:nowrap; }
+  .mobile-nav-item.active { color:var(--ink); background:color-mix(in srgb,var(--acid) 18%,var(--panel)); }
+  .mobile-nav-item.active svg { color:#65a30d; }
+  main section[id], main article[id], main div[id] { scroll-margin-top:14px; }
+  .app-content footer { margin-top:28px; padding-bottom:8px; }
+}
+@media (max-width: 360px) {
+  .mobile-bottom-nav { padding-right:4px; padding-left:4px; }
+  .mobile-nav-item { font-size:9px; }
+  .app-content { padding-right:10px; padding-left:10px; }
+}
